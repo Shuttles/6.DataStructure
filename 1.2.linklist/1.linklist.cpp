@@ -93,8 +93,8 @@ void output(LinkList *l) {
 
 void reverse(LinkList *l) {
     if (!l) return;
-    ListNode *q, *p = &(l->head);
-    p = p->next;
+    ListNode *q, *p = l->head.next;;
+    //p = p->next;
     l->head.next = NULL;
     while (p) {
         q = p->next;
