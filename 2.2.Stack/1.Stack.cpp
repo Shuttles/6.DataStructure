@@ -49,12 +49,10 @@ int expand(Stack *s) {
         if (p) break;
         new_size /= 2;
     }
-    if (p) {
-        s->data = p;
-        s->size += new_size;
-        return 1;
-    }
-    return 0;
+    if (!p) return 0; 
+    s->data = p;
+    s->size += new_size;
+    return 1;
 }
 
 int push(Stack *s, int val) {
