@@ -94,7 +94,7 @@ void output(Queue *q) {
 } 
 
 int main() {
-    #define max_op 10
+    #define max_op 20
     Queue *q = init_Queue(2);
     int op, val;
     srand(time(0));
@@ -111,7 +111,7 @@ int main() {
                 printf("\n");
             } break;
             case 3: {
-                printf("pop %d from the Queue =", front(q));
+                printf("pop %d from the Queue = ", front(q));
                 printf("%d\n", pop(q));
                 output(q);
                 printf("\n");

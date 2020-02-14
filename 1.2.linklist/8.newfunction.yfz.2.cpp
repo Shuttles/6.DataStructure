@@ -53,30 +53,31 @@ void clear_LinkedList(LinkedList *l) {
 }
 
 int insert(LinkedList *l, int ind, int val) {
-    if (!l) return -1;
-    if (ind < 0 || ind > l->length) return -1;
-    int ret = ind;
+    if (!l) return 0;
+    if (ind < 0 || ind > l->length) return 0;
+    //int ret = ind;
     ListNode *p = &(l->head), *q = init_ListNode(val);
     while (ind--) p = p->next;
     q->next = p->next;
     p->next = q;
     l->length += 1;
-    return ret;
+    return 1;
 } 
 
 int erase(LinkedList *l, int ind) {
-    if (!l) return -1;
-    if (ind < 0 || ind >= l->length) return -1;
+    if (!l) return 0;
+    if (ind < 0 || ind >= l->length) return 0;
     ListNode *p = &(l->head), *q;
-    int ret = ind;
+    //int ret = ind;
     while (ind--) p = p->next;
     q = p->next;
     p->next = q->next;
     clear_ListNode(q);
     l->length -= 1;
-    return ret;
+    return 1;
 }
 
+/*
 int search(LinkedList *l, int val) {
     int ind = 0;
     ListNode *p = l->head.next;
@@ -87,6 +88,7 @@ int search(LinkedList *l, int val) {
     if (ind == l->length) ind = -1;
     return ind;
 }
+*/
 
 
 void output(LinkedList *l) {
@@ -110,6 +112,7 @@ void output_search(LinkedList *l, int ind) {
         ind -= 1;
         p = p->next;
     }
+    if (!p && ind != -1) offset += 3;//如果是最后一个元素被erase，就指向NULL；
     for (int i = 0; i < offset; i++) printf(" ");
     printf("^\n");
     for (int i = 0; i < offset; i++) printf(" ");
@@ -130,16 +133,18 @@ int main() {
             case 0:
             case 1:
             case 2: {
-                printf("insert %d at %d to the LinkedList\n",  val, ind);
-                flag = insert(l, ind, val);
+                printf("insert %d at %d to the LinkedList = %d\n",  
+                       val, ind, flag = insert(l, ind, val));
+                //赋值表达式的值是最左边的运算符左边的变量的值！！！
             } break;
             case 3: {
-                printf("erase element at %d from the LinkedList\n", ind);
-                flag = erase(l, ind);
+                printf("erase element at %d from the LinkedList = %d\n", 
+                       ind, flag = erase(l, ind));
             } break;
         }    
         output(l);
-        output_search(l, flag); 
+        int real_ind = flag ? ind : 0;
+        output_search(l, real_ind); 
     }
     clear_LinkedList(l);
     return 0; 
