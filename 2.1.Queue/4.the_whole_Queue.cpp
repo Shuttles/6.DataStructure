@@ -13,14 +13,14 @@
 
 typedef struct Queue {
     int *data;
-    int head, tail, length, count;
+    int head, tail, size, length;
 } Queue;
 
 Queue *init_Queue(int n) {
     Queue *q = (Queue *)malloc(sizeof(Queue));
     q->data = (int *)malloc(sizeof(int) * n);
-    q->length = n;
-    q->head = q->tail = q->count = 0;
+    q->size = n;
+    q->head = q->tail = q->length = 0;
     return q;
 }
 
@@ -33,7 +33,7 @@ void clear_Queue(Queue *q) {
 
 int empty(Queue *q) {
     if (!q) return 0;
-    return q->count == 0;
+    return q->length == 0;
 } 
 
 int front(Queue *q) {
@@ -43,33 +43,48 @@ int front(Queue *q) {
 
 int expand(Queue *q) {
     if (!q) return 0;
-    int new_size = q->length;
+    int extra_size = q->size;
     int *p;
-    while (new_size) {
-        p = (int *)realloc(q->data, sizeof(int) * (new_size + q->length));
+    while (extra_size) {
+        p = (int *)realloc(q->data, sizeof(int) * (extra_size + q->size));
         if (p) break;
-        new_size /= 2;
+        extra_size /= 2;
     }
-    if (p) {
-        q->data = p;
-        q->length += new_size;
-        return new_size;
+    if (!p) return 0; 
+    q->data = p;
+    int previous_size = q->size;
+    q->size += extra_size;
+    if (q->head < q->tail) return 1;//如果是正常顺序
+    //非正常顺序
+    /*
+    for (int i = 0; i < extra_size; i++) {
+        int ind = previous_size;
+        for (int j = ind; j < q->size; j++) {
+            for (int k = j; k > q->head; k--) {
+                q->data[k] = q->data[k - 1];
+                q->head++;
+            }
+        }
     }
-    return 0;
+    */
+    int ind = q->size - 1;
+    for (int i = previous_size - 1; i >= q->head; i--) {
+        q->data[ind--] = q->data[i];
+    }
+    q->head += extra_size;
+    return 1;
 }
 
 
 int push(Queue *q, int val) {
     if (!q) return 0;
-    if (q->count == q->length) {
-        int offset = abs(expand(q) - q->length);
-        if (offset == q->length) return 0;
+    if (q->size == q->length) {
+        if (!expand(q)) return 0;
         printf("expand the Queue successfully\n");
-        q->tail += offset;
     };
     q->data[q->tail++] = val;
-    if (q->tail == q->length) q->tail -= q->length;
-    q->count++;
+    if (q->tail == q->size) q->tail -= q->size;
+    q->length++;
     return 1;
 }
 
@@ -77,17 +92,17 @@ int pop(Queue *q) {
     if (!q) return 0;
     if (empty(q)) return 0;
     q->head++;
-    if (q->head == q->length) q->head -= q->length;
-    q->count--;
+    if (q->head == q->size) q->head -= q->size;
+    q->length--;
     return 1;
 }
 
 void output(Queue *q) {
     if (!q) return;
     printf("Queue(%d) = [", q->length);
-    for (int i = q->head, j = 0; j < q->count; j++) {
+    for (int i = q->head, j = 0; j < q->length; j++) {
         j && printf(", ");
-        printf("%d", q->data[(i + j) % q->length]);
+        printf("%d", q->data[(i + j) % q->size]);
     }
     printf("]\n");
     return;
