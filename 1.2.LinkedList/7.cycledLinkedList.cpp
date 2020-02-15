@@ -101,7 +101,7 @@ void output(LinkedList *l) {
     printf("LinkedList(%d) = [", l->length);
     ListNode *p = l->head.next ? l->head.next->next : l->head.next;//如果链表不为空就指向0号节点，为空就指向NULL；
     int len = l->length;
-    while (len--) {
+    while (len--) {//不能像单链表那样用while (p)了！
         printf("%d->", p->data);
         p = p->next;
     }

@@ -97,6 +97,8 @@
 
       如果ind == 1插入的话，按照普适情况的代码逻辑，虚拟头结点就得指向新插入的元素(ind == l->length)，这样原来的元素就是头结点。
 
+   3. insert要多考虑的一点是如果插入到尾部，虚拟头结点的指向要移动！！
+
    代码如下
 
    ```C
@@ -122,4 +124,61 @@
    }
    ```
 
-   
+6. erase
+
+   1. 这里就不需要考虑空链表了，因为第二个if会自动判断！！！(l->length == 0)
+   2. 但这里需要考虑只有一个元素的情况，如果删除了那个元素，l->head.next要指向NULL，否则不知道会指向哪！！！
+   3. erase要多考虑的一点是如果删除了尾部元素，虚拟头的next的指向要前移！(也就是指向p)
+
+   代码如下：
+
+   ```C
+   int erase(LinkedList *l, int ind) {
+     if (!l) return 0;
+     if (ind < 0 || ind >= l->length) return 0;
+     ListNode *p = l->head.next, *q;
+     int ret = ind;//暂存ind信息
+     while (ind--) p = p->next;
+     q = p->next;
+     p->next = q->next;
+     clear_ListNode(q);
+     if (ret = l->length - 1) l->head.next = p;//如果删除了尾结点，head.next要前移一位！！！
+     l->length -= 1;
+     if (l->length == 0) l->head.next = NULL;//如果删除了唯一的元素，head.next要指向NULL，否则不知道会指向哪！！
+   }
+   ```
+
+7. output
+
+   1. 这里不用考虑只有一个元素的情况了！
+
+   2. 为了更好地观察这个循环链表，我输出时最后多输出了一下0号结点的值！
+
+   代码如下
+
+   ```C
+   void output(LinkedList *l) {
+     if (!l) return ;
+     printf("LinkedList(%d) = [", l->length);
+     ListNode *p = l->head.next ? l->head.next->next : l->head.next;//如果链表不为空就指向0号结点，为空就指向NULL； 
+     int len = l->length;
+     while (len--) { //不能像单链表那样用while (p)了！！
+       printf("%d->", p->data);
+       p = p->next;
+     }
+     //为显示出循环链表的特点，让0号结点最后也输出！！
+     if (l->length != 0) printf("%d]\n", l->head.next->next->data);
+     else printf("]\n");
+     return ;
+   }
+   ```
+
+8. 总结
+
+   1. 大方向上，每个结构操作要考虑空链表和只有一个元素的特殊情况。
+   2. 小方向上，每个结构操作还有自己的特殊情况。
+   3. 首先考虑普适情况，最后调整特殊情况！！！！！！！！！！！！！！！！！！！！！！！！！！！
+
+9. 启示：
+
+   只有在真正实现一个功能/做项目时才能让思维能力和代码理解有质的提升！
