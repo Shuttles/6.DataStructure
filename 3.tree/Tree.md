@@ -4,7 +4,7 @@
 
 1. 树形结构广泛存在我们的现实生活里，下面两张图就是树形结构的例子。
 
-   [](https://wx1.sinaimg.cn/mw690/005LasY6gy1gby6eremkuj30nu0eygpm.jpg)
+   <img src="https://wx1.sinaimg.cn/mw690/005LasY6gy1gby6eremkuj30nu0eygpm.jpg" alt="img" style="zoom:50%;" />
 
 2. 结点--集合
 
