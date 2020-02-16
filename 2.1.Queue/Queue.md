@@ -12,7 +12,48 @@
 
       这样的话比较难实现，确切地说是有bug，首先这肯定涉及到要有一个空间来存储0~tail的元素或者head~q->size的元素，但空间不一定够，如果想拿后面扩容的空间来存的话，后面扩容的空间还不知道够不够，所以有bug，那更别提再malloc空间了，所以这个想法就gg了。
 
-      后来在整理笔记时想到可以利用三个reverse来达成这个idea，但没来得及实现。
+      后来在整理笔记时想到可以利用三个reverse来达成这个idea，于是果断写了一下，发现确实可以！！
+
+      代码如下
+
+      ```C
+      void reverse(Queue *q, int begin, int end) {
+          if (!q) return ;
+          while (begin < end) {
+              int temp = q->data[begin];
+              q->data[begin] = q->data[end];
+              q->data[end] = temp;
+              ++begin;
+              --end;
+          }
+          return;
+      }
+      
+      
+      int expand(Queue *q) {
+          if (!q) return 0;
+          int extra_size = q->size;
+          int *p;
+          while (extra_size) {
+              p = (int *)realloc(q->data, sizeof(int) * (extra_size + q->size));
+              if (p) break;
+              extra_size /= 2;
+          }
+          if (!p) return 0;
+          q->data = p;
+          q->size += extra_size;
+          if (q->head < q->tail) return 1;//如果是正常顺序
+          //非正常顺序
+          reverse(q, 0, q->tail - 1);
+          reverse(q, q->head, q->length - 1);
+          reverse(q, 0, q->length - 1);//这三行代码是精髓！！！！！思想来自计蒜客数据结构的“顺序表的循环左移”！！！！！！！！！！！！！！！！
+          q->head = 0;
+          q->tail = q->length;
+          return 1;
+      }
+      ```
+
+      
 
    2. 后来想到可以将head~q->size的元素往后移到不能移为止，这样就不用考虑扩容空间多少的问题了。
 
