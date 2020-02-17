@@ -48,6 +48,7 @@ void clear_Tree(Tree *tree) {
     return;
 }
 
+
 Node *insertNode(Node *root, int val, int *flag) {
     if (!root) {
         *flag = 1;
@@ -58,6 +59,24 @@ Node *insertNode(Node *root, int val, int *flag) {
     else root->rchild = insertNode(root->rchild, val, flag);
     return root;
 }
+
+
+
+/*
+int i = 0;
+
+int insertNode(Node *root, int val) {
+    if (!root) {
+        root = init_Node(val); 
+        printf("第%d次插入\n", ++i);
+        return 1;
+    }
+    if (root->data == val) return 0;
+    if (val < root->data) insertNode(root->lchild, val);
+    else insertNode(root->rchild, val);
+    return 1;
+}
+*/
 
 void insert(Tree *tree, int val) {
     int flag = 0;//用来判断是否插入成功
@@ -118,7 +137,7 @@ void outputNode(Node *root) {
     if (!root->lchild && !root->rchild) return ;
     printf("(");
     outputNode(root->lchild);
-    printf(",");
+    if (root->rchild) printf(","); //如果有右子树，就输个","
     outputNode(root->rchild);
     printf(")");
     return ;

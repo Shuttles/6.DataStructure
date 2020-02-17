@@ -43,10 +43,11 @@ void clear_Node(Node *root) {
     if (!root) return;
     clear_Node(root->lchild);
     clear_Node(root->rchild);
+    free(root);
     return;
 }
 
-void clear_tree(Tree *tree) {
+void clear_Tree(Tree *tree) {
     if (!tree) return ;
     clear_Node(tree->root);
     free(tree);
@@ -57,7 +58,7 @@ Stack *init_Stack(int n) {
     Stack *s = (Stack *)malloc(sizeof(Stack));
     s->data = (Node **)malloc(sizeof(Node *) * n);
     s->top = -1;
-    s->size = 0;
+    s->size = n;
     return s;
 }
 
@@ -91,40 +92,41 @@ int pop(Stack *s) {
 }
 
 Node *transform(char *str, int *node_num) {
-    Node *temp = NULL, *p = NULL;
+    Node *temp = NULL, *root = NULL;//root记录最后的根节点
     Stack *s = init_Stack(strlen(str));
     int flag = 0;//记录有无逗号
-    while (str[0]) {
-        switch (str[0]) {
-            case '(': {
+    int i = 0;
+    while (str[i]) {
+        switch (str[i]) {
+            case '(': {//只有遇到左括号，前一个值才入栈！！！因为左括号表示这是一个新事件的开始！！即后面是前一个值的子树！！！
                 push(s, temp);
                 flag = 0;
                 temp = NULL;
             } break;
             case ')': {
-                p = top(s);
+                root = top(s);
                 pop(s);
             } break;
             case ',': {
                 flag = 1;
                 temp = NULL;
             } break;
-            case ' ':break;
+            case ' ': break;
             default: {
-                temp = init_Node(str[0]);
-                if (!empty(s) && flag == 0) {
+                temp = init_Node(str[i]);
+                if (!empty(s) && !flag) {
                     top(s)->lchild = temp;
-                } else if (!empty(s) && flag == 1) {
+                } else if (!empty(s) && flag) {
                     top(s)->rchild = temp;
                 }
                 (*node_num)++;
             } break;
         }
-        ++str;
+        ++i;
     }
     clear_Stack(s);
-    if (temp && !p) p = temp;
-    return p;
+    if (temp && !root) root = temp;//防止只有一个根节点，如A
+    return root;
 }
 
 void pre_orderNode(Node *root) {
@@ -136,9 +138,10 @@ void pre_orderNode(Node *root) {
 }
 
 void pre_order(Tree *tree) {
-    printf("pre_order : [");
+    if (!tree) return ;
+    printf("pre_order : ");
     pre_orderNode(tree->root);
-    printf("]\n");
+    printf("\n");
     return;
 }
 
@@ -151,9 +154,10 @@ void in_orderNode(Node *root) {
 }
 
 void in_order(Tree *tree) {
-    printf("in_order : [");
+    if (!tree) return;
+    printf("in_order : ");
     in_orderNode(tree->root);
-    printf("]\n");
+    printf("\n");
     return;
 }
 
@@ -166,10 +170,30 @@ void post_orderNode(Node *root) {
 }
 
 void post_order(Tree *tree) {
-    printf("post_order : [");
+    if (!tree) return ;
+    printf("post_order : ");
     post_orderNode(tree->root);
-    printf("]\n");
+    printf("\n");
     return;
+}
+
+void outputNode(Node *root) {
+    if (!root) return;
+    printf("%c", root->data);
+    if (!root->lchild && !root->rchild) return ;
+    printf("(");
+    outputNode(root->lchild);
+    if (root->rchild) printf(",");
+    outputNode(root->rchild);
+    printf(")");
+    return ;
+}
+
+void output(Tree *tree) {
+    if (!tree) return ;
+    outputNode(tree->root);
+    printf("\n");
+    return ;
 }
 
 
@@ -180,9 +204,10 @@ int main() {
     Tree *tree = init_Tree();
     tree->root = transform(str, &node_num);
     tree->n = node_num;
-    pre_order(tree), printf("\n");
-    in_order(tree), printf("\n");
-    post_order(tree), printf("\n");
-    clear_tree(tree);
+    output(tree);
+    pre_order(tree);
+    in_order(tree);
+    post_order(tree);
+    clear_Tree(tree);
     return 0;
 }
