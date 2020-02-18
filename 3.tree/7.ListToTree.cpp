@@ -114,6 +114,7 @@ Node *transform(char *str, int *node_num) {
             case ' ': break;
             default: {
                 temp = init_Node(str[i]);
+                //为什么要判空呢？因为这时可能是根节点！！！
                 if (!empty(s) && !flag) {
                     top(s)->lchild = temp;
                 } else if (!empty(s) && flag) {

@@ -46,9 +46,10 @@
 
 1. 二叉树的结构操作与递归密切相关！！！
 
-   在递归程序设计时你只需要这么想：所到的每个结点都是root结点，都有其左子树、右子树！！！
+   + 在递归程序设计时你只需要这么想：所到的每个结点都是root结点，都有其左子树、右子树！！！
+   + 返回值基本都是Node *类型的！！(比较我实现的错误的insert和泽哥实现的正确的insert就可以懂了)
 
-
+   
 
 #### 结构定义
 
@@ -207,18 +208,61 @@ void pre_order(Tree *tree) {
 }
 ```
 
+2. 中序遍历：左 根 右
 
+3. 后序遍历：左 右 根
 
-1. 中序遍历：左 根 右
-2. 后序遍历：左 右 根
-3. 层序遍历：利用Queue
-4. 至少知道2种遍历方式就能反推出这棵树(有一种必须为中序遍历！)！
+4. 层序遍历：利用Queue
 
 ```C
-
+void level_order(Tree *tree) {
+  	if(!tree) return ;
+  	if (!tree->root) return ;
+    Queue *q = init_Queue(MAX_N + 5);
+    push(q, tree->root);//先将根节点入队
+    while (!empty(q)) {
+        if (front(q)->lchild) {
+            push(q, front(q)->lchild);
+        }
+        if (front(q)->rchild) {
+            push(q, front(q)->rchild);
+        }
+        (front(q) != tree->root) && printf(" ");
+        printf("%c ", front(q)->data);
+        pop(q);
+    }
+    return ;
+}
 ```
 
+5. 至少知道2种遍历方式就能反推出这棵树(有一种必须为中序遍历！)！
 
+   + 已知二叉树的先序遍历和中序遍历，求后序遍历。
+
+     算法过程如下：
+
+     我们可以在先序遍历里知道根节点的编号，在中序遍历中就可以找到根节点所在位置(strchr函数)， 那么位置前面的结点就是根结点的左子树上的结点，位置后面的结点就是右子树上的结点。
+
+     按照以上函数***<u>递归</u>***建立起一个二叉树！！！！！
+
+     代码如下
+
+     ```C
+     Node *build(char pre_str[], char in_str[], int len) {
+       //给予的语义信息就是前一个字符串是该子树(理解成子树更好理解！！)的先序遍历，第二个字符串是中序遍历，len是这俩遍历的长度(即子树的结点个数)
+       Node *root = init_Node(pre_str[0] & 15);//利用先序遍历找到根结点的值并生成根结点
+       int ind = strchr(in_str, pre_str[0]) - in_str;//找到中序遍历中根结点所在的位置,这也是左子树的元素个数！！！
+       if (ind > 0) {//如果左子树存在
+         root->lchild = build(pre_str + 1, in_str, ind);//递归建立左子树
+       }
+       if (len - ind - 1 > 0) {//如果右子树存在
+       	root->rchild = build(pre_str + ind + 1, in_str + ind + 1, len - ind - 1);//递归建立右子树
+       }
+       return root;
+     }
+     ```
+
+     
 
 ## N叉树转化成二叉树
 
@@ -262,12 +306,50 @@ void pre_order(Tree *tree) {
 4. 根节点A，左孩子B，右孩子C：A(B, C)
 5. 二叉树转广义表，广义表转二叉树都必须会！
 
-广义表转二叉树
-
-代码如下
+6. 广义表转二叉树
+   + 利用栈来解决！因为栈可以解决具有完全包含关系的问题！
+   + "("表示事件的开始，")"表示事件的结束！！！
+   + 遇到普通字符不入栈，只是简单init_Node，只有遇到"("才表示事件开始，表示后面是temp的子树，所以将temp入栈并且同时flag清零！！！！遇到")"表示事件结束，即栈顶元素的子树结束了，所以将栈顶元素出栈！！！
 
 ```C
-
+Node *transform(char *str, int *node_num) {
+    Node *temp = NULL, *root = NULL;//root记录最后的根节点
+    Stack *s = init_Stack(strlen(str));
+    int flag = 0;//记录有无逗号
+    int i = 0;
+    while (str[i]) {
+        switch (str[i]) {
+            case '(': {//只有遇到左括号，前一个值才入栈！！！因为左括号表示这是一个新事件的开始！！即后面是前一个值的子树！！！
+                push(s, temp);
+                flag = 0;
+                temp = NULL;
+            } break;
+            case ')': {
+                root = top(s);
+                pop(s);
+            } break;
+            case ',': {
+                flag = 1;
+                temp = NULL;
+            } break;
+            case ' ': break;
+            default: {
+                temp = init_Node(str[i]);
+              	//为什么要判空呢？因为有可能这时是根节点！！
+                if (!empty(s) && !flag) {
+                    top(s)->lchild = temp;
+                } else if (!empty(s) && flag) {
+                    top(s)->rchild = temp;
+                }
+                (*node_num)++;
+            } break;
+        }
+        ++i;
+    }
+    clear_Stack(s);
+    if (temp && !root) root = temp;//防止只有一个根节点，如A
+    return root;
+}
 ```
 
 
