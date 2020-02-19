@@ -1,3 +1,9 @@
+# 本质
+
+堆的本质其实就是一棵完全二叉树！！(由于其特性可用顺序表来存储)
+
+![img](https://wx3.sinaimg.cn/mw690/005LasY6gy1gc1j7jvtpfj31l70u0k2a.jpg)
+
 # 分类
 
 ## 大顶堆
@@ -6,13 +12,13 @@
 
 
 
+![img](https://wx2.sinaimg.cn/mw690/005LasY6gy1gc1k62m8arj30ti0ootcf.jpg)
+
 ## 小顶堆
 
-1. 定义：每个根结点的
+1. 定义：每个根结点的data＞左右子树的任何结点的data
 
-
-
-
+![img](https://wx2.sinaimg.cn/mw690/005LasY6gy1gc1k69zjtoj30ve0ns781.jpg)
 
 
 
@@ -64,6 +70,8 @@ typedef struct Heap {
 
 3. push(在尾部插入并向上调整)(由此可以衍生出一种时间复杂度为O(nlogn)的建堆方法)
 
+   ![img](https://wx2.sinaimg.cn/mw690/005LasY6gy1gc1k6g77j0j31lz0u0k1n.jpg)
+
    ```C
    int push(Heap *q, int val) {
      if (!q) return 0;
@@ -82,6 +90,8 @@ typedef struct Heap {
    
 
 4. 弹出(在头部弹出并向下调整)
+
+   ![img](https://wx4.sinaimg.cn/mw690/005LasY6gy1gc1k6na08dj31lu0u0ajh.jpg)
 
 ```C
 int pop(Heap *q) {
