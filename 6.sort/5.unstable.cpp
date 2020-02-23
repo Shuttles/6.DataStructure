@@ -30,7 +30,7 @@ void select_sort(int *arr, int n) {
     for (int i = 0; i < n - 1; i++) {
         int ind = i;
         for (int j = i + 1; j < n; j++) {
-            if (arr[ind] > arr[j]) ind = j;
+            if (arr[j] < arr[ind]) ind = j;
         }
         if (ind - i) swap(arr[i], arr[ind]);
     }
