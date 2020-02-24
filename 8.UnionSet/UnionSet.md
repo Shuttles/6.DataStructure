@@ -1,3 +1,15 @@
+# 森林
+
+1. 由若干棵互不相交的树组成的，两棵树之间分别独立，没有交集。
+
+2. 遍历
+   + 先根遍历
+   + 后根遍历
+
+
+
+
+
 # 并查集
 
 参考资料：
@@ -10,7 +22,7 @@ https://blog.csdn.net/dm_vincent/article/details/7769159
 
 ## 用途
 
-解决连通性问题
+解决连通性问题，用于求不相交集合并集。
 
 ### 连通性问题
 
@@ -291,7 +303,7 @@ int merge(UnionSet *u, int a, int b) {
 }
 ```
 
-
+![img](https://wx2.sinaimg.cn/mw690/005LasY6gy1gc7ljidpwdj30kw0aotau.jpg)
 
 
 

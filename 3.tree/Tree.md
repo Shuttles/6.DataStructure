@@ -367,15 +367,133 @@ Node *transform(char *str, int *node_num) {
 
 
 
-## 二叉排序树
+## 二叉查找树(BST)
 
-又称二叉搜索树，二叉查找树
+#### 综述
+
+又称二叉排序树，二叉搜索树(Binary Search Tree)
 
 1. 性质：
 
    + 左子树<根结点
    + 右子树＞根结点
+   + 一般而言，BST上结点的值都是唯一的。
+   + 如果中序遍历BST，会得到一个从小到大的序列。
+   + BST的插入和查找效率相对较高，最坏情况下时间复杂度为O(n),期望的时间复杂度为O(logn)。
 
 2. 用途：
 
    解决与排名相关的检索需求
+
+
+
+#### 结构定义
+
+```C
+typedef struct Node {
+  int key;
+  struct Node *lchild, *rchild;
+} Node;
+```
+
+
+
+#### 结构操作
+
+##### 初始化与回收
+
+```C
+Node *init_Node(int key) {
+  Node *node = (Node *)malloc(sizeof(Node));
+  node->key = key;
+  node->lchild = node->rchild = NULL;
+  return node;
+}
+
+void clear_Node(Node *root) {
+  if (!root) return ;
+  clear_Node(root->lchild);
+  clear_Node(root->rchild);
+  free(root);
+  return ;
+}
+```
+
+##### 插入
+
+```C
+Node *insert(Node *root, int key) {
+  if (!root) {
+    return init_Node(key);
+  }
+  if (root->key == key) return root;
+  if (root->key > key) root->lchild = insert(root->lchild, key);
+  else root->rchild = insert(root->rchild, key);
+  return root;
+}
+```
+
+##### 删除
+
+###### 图解
+
+![img](https://wx4.sinaimg.cn/mw690/005LasY6gy1gc7uvjwktij31cb0u0x0t.jpg)
+
++ 删除度为0的结点
+
+  直接删除就好了
+
++ 删除度为1的结点
+
+  ![img](https://wx3.sinaimg.cn/mw690/005LasY6gy1gc7uvxhzpbj31ck0u0nja.jpg)
+
+  ![img](https://wx3.sinaimg.cn/mw690/005LasY6gy1gc7uw4ct0qj31at0u0tu9.jpg)
+
++ 删除度为2的结点
+
+  ![img](https://wx2.sinaimg.cn/mw690/005LasY6gy1gc7uwa6zbwj31k10u0b0h.jpg)
+
+  因为其前驱或者后继一定是度为1的结点！！！
+
+  ![img](https://wx1.sinaimg.cn/mw690/005LasY6gy1gc7uwgydazj31hq0u0no1.jpg)
+
+  ![img](https://wx1.sinaimg.cn/mw690/005LasY6gy1gc7uwna9grj31jo0u0x4s.jpg)
+
+  ![img](https://wx3.sinaimg.cn/mw690/005LasY6gy1gc7uwzx03jj31k50u0qsa.jpg)
+
+  
+
+```C
+//下面是寻找当前结点的前驱结点的方法
+//当前结点的前驱就是小于当前结点的最大结点，就是先往左走一步，再一直往右走！！！！
+Node *predecessor(Node *root) {
+  Node *temp = root->lchild;
+  while (temp->rchild) temp = temp->rchild;
+  return temp;
+}
+
+//返回值设计得妙啊！！！！
+Node *erase(Node *root, int key) {
+  if (!root) return ;//表示没找到这个值
+  if (key < root->key) root->lchild = erase(root->lchild, key);
+  else if (key > root->key) root->rchild = erase(root->rchild, key);
+  else {
+    //接下来是正式删除
+    if (root->lchild == NULL || root->rchild == NULL) {
+      //度为0或度为1的结点
+      Node *temp = root->rchild ? root->rchild : root->lchild;
+      free(root);
+      return temp;
+    } else {
+      //度为2的结点！！
+      //要找到前驱或者后继，此处以前驱为例
+      Node *temp = predecessor(root);
+      root->key = temp->key;
+      root->lchild = erase(root->lchild, temp->key);
+    }
+  }
+  return root;
+}
+
+```
+
