@@ -9,18 +9,18 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct ListNode {
+typedef struct Node {
     char *str;
-    struct ListNode *next;
-} ListNode;
+    struct Node *next;
+} Node;
 
 typedef struct HashTable {
-    ListNode **data;
+    Node **data;
     int size;
 } HashTable;
 
-ListNode *init_ListNode(char *str, ListNode *head) {
-    ListNode *p = (ListNode *)malloc(sizeof(ListNode));
+Node *init_Node(char *str, Node *head) {
+    Node *p = (Node *)malloc(sizeof(Node));
     p->str = strdup(str);//将原来str字符串拷贝出来
     p->next = head;
     return p;
@@ -29,27 +29,27 @@ ListNode *init_ListNode(char *str, ListNode *head) {
 HashTable *init_HashTable(int n) {
     HashTable *h = (HashTable *)malloc(sizeof(HashTable));
     h->size = n << 1;//开两倍的空间
-    h->data = (ListNode **)calloc(h->size, sizeof(ListNode *));
+    h->data = (Node **)calloc(h->size, sizeof(Node *));
     return h;
 }
 
-void clear_ListNode(ListNode *node) {
+void clear_Node(Node *node) {
     if (!node) return ;
-    ListNode *p = node, *q;
+    Node *p = node, *q;
     while (p) {
         q = p->next;
         free(p->str);
         free(p);
         p = q;
     }
-    free(q);
+    //free(q);
     return ;
 }
 
 void clear_HashTable(HashTable *h) {
     if (!h) return ;
     for (int i = 0; i < h->size; i++) {
-        clear_ListNode(h->data[i]);
+        clear_Node(h->data[i]);
     }
     free(h->data);
     free(h);
@@ -64,14 +64,14 @@ int BKDRHash(char *str) {
 int insert(HashTable *h, char *str) {
     int hash = BKDRHash(str);
     int ind = hash % h->size;
-    h->data[ind] = init_ListNode(str, h->data[ind]);
+    h->data[ind] = init_Node(str, h->data[ind]);
     return 1;
 }
 
 int search(HashTable *h, char *str) {
     int hash = BKDRHash(str);
     int ind = hash % h->size;
-    ListNode *p = h->data[ind];
+    Node *p = h->data[ind];
     while (p && strcmp(p->str, str)) {
         p = p->next;
     } 
