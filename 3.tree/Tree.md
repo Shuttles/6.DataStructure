@@ -177,6 +177,21 @@ void clear_Tree(Tree *tree) {
    }
    ```
 
+   刘晨旭错误的改版，也是没注意到形参和实参的区别！
+   
+   ```C
+   Node *insertNode(Node *root, int val, int *flag) {
+     if (!root) {
+       *flag = 1;
+       return root = init_Node(val);//只是给指针变量(形参)赋值，并不改变实参的值！！！
+     }
+     if (val == root->data) return root;
+     if (val < root->data) insertNode(root->lchild, val, flag);
+     else insertNode(root->rchild, val, flag);
+     return root;
+   }
+   ```
+   
    
 
 

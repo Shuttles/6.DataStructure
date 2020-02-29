@@ -60,7 +60,33 @@ Node *insertNode(Node *root, int val, int *flag) {
     return root;
 }
 
+/*
+int insertNode(Node *root, int val) {
+  if (!root) {
+    root = 
+    return 1;
+  }
+  if (val == root->data) return 0;
+  if (val < root->data) insertNode(root->lchild, val);
+  else insertNode(root->rchild, val);
+  return 1;
+}
+*/
 
+/*
+ //刘晨旭版，也是不对的，想想为啥呢？
+ //还是形参和实参的问题！！！
+Node *insertNode(Node *root, int val, int *flag) {
+    if (!root) {
+        *flag = 1;
+        return root = init_Node(val);
+    }
+    if (root->data == val) return root;
+    if (val < root->data) insertNode(root->lchild, val, flag);
+    else insertNode(root->rchild, val, flag);
+    return root;
+}
+*/
 
 /*
 int i = 0;
@@ -68,7 +94,7 @@ int i = 0;
 int insertNode(Node *root, int val) {
     if (!root) {
         root = init_Node(val); 
-        printf("第%d次插入\n", ++i);
+        //printf("第%d次插入\n", ++i);
         return 1;
     }
     if (root->data == val) return 0;
