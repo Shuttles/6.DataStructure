@@ -191,12 +191,25 @@ void clear_Tree(Tree *tree) {
      return root;
    }
    ```
-   
-   
 
+对比反转二叉树！！！
 
+```c
+struct TreeNode* invertTree(struct TreeNode* root){
+    if (!root) return NULL;
+    struct TreeNode *temp = root->left;
+    root->left = root->right;
+    root->right = temp;
+    root->left = invertTree(root->left);
+    root->right = invertTree(root->right);
+    return root;
+}
 
-
+//倒数2、3行可以改写成
+invertTree(root->left);
+invertTree(root->right);
+//可以这么改写是因为最后返回值设计的是Node类型！！！
+```
 
 
 
@@ -398,7 +411,19 @@ Node *transform(char *str, int *node_num) {
 
 2. 用途：
 
-   解决与排名相关的检索需求
+   ==解决与排名相关的检索需求==
+   
+   > 如何解决呢？比如说求排名第K名的成绩
+   >
+   > 这要分三种情况！
+   >
+   > 1. 根节点左子树的结点个数>=k 则第k名在左子树
+   > 2. 根节点左子树的结点个数 == k - 1，则第k名为根节点
+   > 3. 根节点左子树的结点个数 < k - 1，则第k名在右子树的第`k - size(右) - 1`名
+   >
+   > ***<u>所以，就得在每个结点的结构定义中增加一个字段，就是以这个结点为root结点的树的结点个数size！</u>***
+   
+   
 
 
 
@@ -511,4 +536,18 @@ Node *erase(Node *root, int key) {
 }
 
 ```
+
+
+
+
+
+
+
+
+
+### 平衡二叉排序树
+
+#### AVL树
+
+
 
