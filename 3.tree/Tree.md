@@ -553,7 +553,37 @@ Node *erase(Node *root, int key) {/*在以root为根节点的子树中删除一�
 
 ### 平衡二叉排序树
 
+
+
+1. 引出
+
+   ==如果插入BStree的顺序不当，就有可能使BStree退化成一个链表，因此查找效率就从O(logn)退化到了O(n)==
+
+2. 所以就来了平衡二叉排序树
+
+   ==每种平衡二叉排序树的“平衡”定义是不一样的！==
+
+
+
 #### AVL树
+
+![img](https://wx2.sinaimg.cn/mw690/005LasY6gy1ge3p8h0k3jj31k10u07wh.jpg)
+
+1. 可以看出它的“平衡定义”
+
+2. 思考
+
+   ![img](https://wx2.sinaimg.cn/mw690/005LasY6gy1ge3pgfzic5j31d70u0ncn.jpg)
+
+   saf
+
+3. saf
+
+4. saf
+
+5. sdaf
+
+6. 
 
 
 
