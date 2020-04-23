@@ -191,12 +191,25 @@ void clear_Tree(Tree *tree) {
      return root;
    }
    ```
-   
-   
 
+对比反转二叉树！！！
 
+```c
+struct TreeNode* invertTree(struct TreeNode* root){
+    if (!root) return NULL;
+    struct TreeNode *temp = root->left;
+    root->left = root->right;
+    root->right = temp;
+    root->left = invertTree(root->left);
+    root->right = invertTree(root->right);
+    return root;
+}
 
-
+//倒数2、3行可以改写成
+invertTree(root->left);
+invertTree(root->right);
+//可以这么改写是因为最后返回值设计的是Node类型！！！
+```
 
 
 
@@ -398,7 +411,19 @@ Node *transform(char *str, int *node_num) {
 
 2. 用途：
 
-   解决与排名相关的检索需求
+   ==解决与排名相关的检索需求==
+   
+   > 如何解决呢？比如说求排名第K名的成绩
+   >
+   > 这要分三种情况！
+   >
+   > 1. 根节点左子树的结点个数>=k 则第k名在左子树
+   > 2. 根节点左子树的结点个数 == k - 1，则第k名为根节点
+   > 3. 根节点左子树的结点个数 < k - 1，则第k名在右子树的第`k - size(右) - 1`名
+   >
+   > ***<u>所以，就得在每个结点的结构定义中增加一个字段，就是以这个结点为root结点的树的结点个数size！</u>***
+   
+   
 
 
 
@@ -436,12 +461,16 @@ void clear_Node(Node *root) {
 
 ##### 插入
 
+1. 有一个设计技巧，就是返回值的设计！
+2. 返回值设置为==插入之后的那个子树的根节点地址==！！
+
 ```C
-Node *insert(Node *root, int key) {
+//仔细揣摩返回值设计的巧妙!!!
+Node *insert(Node *root, int key) {/*向以root为根节点的子树中插入key*/
   if (!root) {
     return init_Node(key);
   }
-  if (root->key == key) return root;
+  if (root->key == key) return root;/*插入的值已经存在*/
   if (root->key > key) root->lchild = insert(root->lchild, key);
   else root->rchild = insert(root->rchild, key);
   return root;
@@ -468,7 +497,7 @@ Node *insert(Node *root, int key) {
 
   ![img](https://wx2.sinaimg.cn/mw690/005LasY6gy1gc7uwa6zbwj31k10u0b0h.jpg)
 
-  因为其前驱或者后继一定是度为1的结点！！！
+  因为其前驱或者后继一定是==度为1或0的结点==！！！
 
   ![img](https://wx1.sinaimg.cn/mw690/005LasY6gy1gc7uwgydazj31hq0u0no1.jpg)
 
@@ -476,6 +505,9 @@ Node *insert(Node *root, int key) {
 
   ![img](https://wx3.sinaimg.cn/mw690/005LasY6gy1gc7uwzx03jj31k50u0qsa.jpg)
 
+  1. 删除操作的返回值设计得也很巧妙！！
+  2. 返回值设置为==删除完这个结点之后的子树的根结点地址==
+  
   
 
 ```C
@@ -488,7 +520,7 @@ Node *predecessor(Node *root) {
 }
 
 //返回值设计得妙啊！！！！
-Node *erase(Node *root, int key) {
+Node *erase(Node *root, int key) {/*在以root为根节点的子树中删除一个值为key的结点*/
   if (!root) return ;//表示没找到这个值
   if (key < root->key) root->lchild = erase(root->lchild, key);
   else if (key > root->key) root->rchild = erase(root->rchild, key);
@@ -498,7 +530,7 @@ Node *erase(Node *root, int key) {
       //度为0或度为1的结点
       Node *temp = root->rchild ? root->rchild : root->lchild;
       free(root);
-      return temp;
+      return temp;/*如果为叶子结点就会返回NULL*/
     } else {
       //度为2的结点！！
       //要找到前驱或者后继，此处以前驱为例
@@ -509,6 +541,49 @@ Node *erase(Node *root, int key) {
   }
   return root;
 }
-
 ```
+
+
+
+
+
+
+
+
+
+### 平衡二叉排序树
+
+
+
+1. 引出
+
+   ==如果插入BStree的顺序不当，就有可能使BStree退化成一个链表，因此查找效率就从O(logn)退化到了O(n)==
+
+2. 所以就来了平衡二叉排序树
+
+   ==每种平衡二叉排序树的“平衡”定义是不一样的！==
+
+
+
+#### AVL树
+
+![img](https://wx2.sinaimg.cn/mw690/005LasY6gy1ge3p8h0k3jj31k10u07wh.jpg)
+
+1. 可以看出它的“平衡定义”
+
+2. 思考
+
+   ![img](https://wx2.sinaimg.cn/mw690/005LasY6gy1ge3pgfzic5j31d70u0ncn.jpg)
+
+   saf
+
+3. saf
+
+4. saf
+
+5. sdaf
+
+6. 
+
+
 
