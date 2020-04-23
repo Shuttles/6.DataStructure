@@ -461,12 +461,16 @@ void clear_Node(Node *root) {
 
 ##### 插入
 
+1. 有一个设计技巧，就是返回值的设计！
+2. 返回值设置为==插入之后的那个子树的根节点地址==！！
+
 ```C
-Node *insert(Node *root, int key) {
+//仔细揣摩返回值设计的巧妙!!!
+Node *insert(Node *root, int key) {/*向以root为根节点的子树中插入key*/
   if (!root) {
     return init_Node(key);
   }
-  if (root->key == key) return root;
+  if (root->key == key) return root;/*插入的值已经存在*/
   if (root->key > key) root->lchild = insert(root->lchild, key);
   else root->rchild = insert(root->rchild, key);
   return root;
@@ -493,7 +497,7 @@ Node *insert(Node *root, int key) {
 
   ![img](https://wx2.sinaimg.cn/mw690/005LasY6gy1gc7uwa6zbwj31k10u0b0h.jpg)
 
-  因为其前驱或者后继一定是度为1的结点！！！
+  因为其前驱或者后继一定是==度为1或0的结点==！！！
 
   ![img](https://wx1.sinaimg.cn/mw690/005LasY6gy1gc7uwgydazj31hq0u0no1.jpg)
 
@@ -501,6 +505,9 @@ Node *insert(Node *root, int key) {
 
   ![img](https://wx3.sinaimg.cn/mw690/005LasY6gy1gc7uwzx03jj31k50u0qsa.jpg)
 
+  1. 删除操作的返回值设计得也很巧妙！！
+  2. 返回值设置为==删除完这个结点之后的子树的根结点地址==
+  
   
 
 ```C
@@ -513,7 +520,7 @@ Node *predecessor(Node *root) {
 }
 
 //返回值设计得妙啊！！！！
-Node *erase(Node *root, int key) {
+Node *erase(Node *root, int key) {/*在以root为根节点的子树中删除一个值为key的结点*/
   if (!root) return ;//表示没找到这个值
   if (key < root->key) root->lchild = erase(root->lchild, key);
   else if (key > root->key) root->rchild = erase(root->rchild, key);
@@ -523,7 +530,7 @@ Node *erase(Node *root, int key) {
       //度为0或度为1的结点
       Node *temp = root->rchild ? root->rchild : root->lchild;
       free(root);
-      return temp;
+      return temp;/*如果为叶子结点就会返回NULL*/
     } else {
       //度为2的结点！！
       //要找到前驱或者后继，此处以前驱为例
@@ -534,7 +541,6 @@ Node *erase(Node *root, int key) {
   }
   return root;
 }
-
 ```
 
 
