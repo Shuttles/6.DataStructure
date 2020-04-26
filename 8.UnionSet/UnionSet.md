@@ -82,7 +82,7 @@ int find(UnionSet *u, int x) {
 
 //下面是联通操作
 int merge(UnionSet *u, int a, int b) {
-  if (find(u,a ) == find(u, b)) return 0;
+  if (find(u,a) == find(u, b)) return 0;
   int color_a = u->color[a];
   for (int i = 1; i <= u->n; i++) {
     if (u->color[i] - color_a) continue;

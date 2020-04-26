@@ -567,23 +567,240 @@ Node *erase(Node *root, int key) {/*在以root为根节点的子树中删除一�
 
 #### AVL树
 
+##### 1. 基本概念
+
 ![img](https://wx2.sinaimg.cn/mw690/005LasY6gy1ge3p8h0k3jj31k10u07wh.jpg)
 
-1. 可以看出它的“平衡定义”
+1. ==可以看出它的“平衡定义”==
 
 2. 思考
 
    ![img](https://wx2.sinaimg.cn/mw690/005LasY6gy1ge3pgfzic5j31d70u0ncn.jpg)
 
-   saf
+   + 显然只有第二个问题中的下限比较难求，我们设`low(H)`为高度H的AVL树的结点数量的下限
 
-3. saf
+   + 则![img](https://wx2.sinaimg.cn/mw690/005LasY6gy1ge5tsqt0e6j31280eu12n.jpg)
 
-4. saf
+   + `low(H) = low(H - 1) + low(H- 2) + 1`
 
-5. sdaf
+   + 所以答案为
 
-6. 
+     ![img](https://wx3.sinaimg.cn/mw690/005LasY6gy1ge5tuezd4lj31ra0fg4ax.jpg)
+
+   + 下限的公式和斐波那契数列的公式很相似，所以==增长速率也应相似==
+
+     fib数列的增长速度约为1.618， 取个近似为1.5
+
+     则![img](https://wx2.sinaimg.cn/mw690/005LasY6gy1ge5tyaab00j311w0u0e81.jpg)
+
+   + ==所以，AVL树的结点上下界都是logN级别的！==
 
 
 
+##### 2. 调整策略
+
+1. ***<u>最基本的调整策略：</u>***左/右旋
+
+   ==其实就是抓着第一个失衡的结点进行左/右旋！==
+
+   也称 ***<u>转一下，砍一刀！</u>***
+
+   ![img](https://wx2.sinaimg.cn/mw690/005LasY6gy1ge5u4p4cn8j31t80u04qp.jpg)
+
+   + 就是抓着K1结点左旋！
+   + 注意这种情况会发生在==删除K2的子节点之后==！(==把这种情况当做RR==)
+
+   ![img](https://wx3.sinaimg.cn/mw690/005LasY6gy1ge5u4sdytrj31uh0u04qp.jpg)
+
+   + 右旋与左旋相对称！
+
+2. ***<u>失衡调整</u>***
+
+   以下的失衡类型是站在==插入结点的角度==考虑的！但是删除结点的情况也适用！
+
+   并且都是从下往上找第一个失衡的结点，站在那个结点来看的！
+
+   ![img](https://wx3.sinaimg.cn/mw690/005LasY6gy1ge5u9gjpsrj31l50u07wh.jpg)
+
+   + LL
+
+     + 就是第一个失衡的结点(K1)的左子树的左子树更重一些！
+
+     + 高度关系及调整策略
+
+       ![img](https://wx1.sinaimg.cn/mw690/005LasY6gy1ge5uopwq4cj31ca0u0kjl.jpg)
+
+     + LR
+
+       + 高度关系
+
+         ![img](https://wx1.sinaimg.cn/mw690/005LasY6gy1ge5ure3amlj319n0u0npd.jpg)
+
+       + 调整策略
+
+         先抓着==K2==(此时不是抓着第一个失衡的结点)进行左旋变成LL型，然后右旋(抓着第一个失衡的结点==K1==)即可
+
+         ![img](https://wx2.sinaimg.cn/mw690/005LasY6gy1ge5uwdvqu6j31q10u0b29.jpg)
+
+         
+
+         
+
+
+
+##### 3.代码演示
+
+```c++
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int key, h;/*定义在这更节省存储空间*/
+    struct Node *lchild, *rchild;
+} Node;
+
+/*骚操作, 用NIL代替NULL*/
+Node _NIL;
+Node *NIL = &_NIL;
+__attribute__((constructor))
+void init_NIL() {
+    NIL->key = 0;
+    NIL-h = 0;
+    NIL->lchild = NIL->rchild = NIL;
+    return ;
+}
+
+
+Node *getNewNode(int key) {
+    Node *p = (Node *)malloc(sizeof(Node));
+    p->key = key;
+    p->lchild = p->rchild = NIL;
+    p->h = 1;
+    return p;
+}
+
+void clear(Node *root) {
+    if (root = NIL) return ;
+    clear(root->lchild);
+    clear(root->rchild);
+    free(root);
+    return ;
+}
+
+void UpdateHeight(Node *root) {
+    /*用了NIL之后就不用担心左右子树为NULL了！！！！*/
+    int h1 = root->lchild->h;
+    int h2 = root->rchild->h;
+    root->h = (h1 > h2 ? h1 : h2) + 1;
+    return ;
+}
+
+Node *left_rotate(Node *root) {
+    /*定义一个temp作为旋转完的根节点*/
+    Node *temp = root->rchild;
+    root->rchild = temp->lchild;
+    temp->lchild = root;
+    
+    /*更新树高*/
+    /*只有新老根节点h可能发生变化*/
+    UpdateHeight(root);
+    UpdateHeight(temp);
+    return temp;
+}
+
+Node *right_rotate(Node *root) {
+    /*定义一个temp作为旋转完的根节点*/
+    Node *temp = root->lchild;
+    root->lchild = temp->rchild;
+    temp->rchild = root;
+    
+    /*更新树高*/
+    /*只有新老根节点h可能发生变化*/
+    UpdateHeight(root);
+    UpdateHeight(temp);
+    return temp;
+}
+
+Node *maintain(Node *root) {/*返回值就是调整完之后这棵子树的root结点*/
+    if (abs(root->lchild->h - root->rchild->h) <= 1) return root;/*不用调整*/
+    /*进行调整*/
+    if (root->lchild->h > root->rchild->h) {
+        /*第一个字母是L*/
+        if (root->lchild->rchild->h > root->lchild->lchild->h) {
+            /*第二个字母是R*/
+            /*抓住根节点的左孩子进行左旋*/
+            root->lchild = left_rotate(root->lchild);
+        }   
+        root = right_rotate(root);/*抓住根节点(第一个失衡的结点)进行右旋*/
+    } else {
+        if (root->rchild->lchild->h > root->rchild->rchild->h) {
+            root->rchild = right_rotate(root->rchild);
+        }   
+        root = left_rotate(root);
+    }
+    return root;
+}
+
+Node *insert(Node *root, int key) {
+    if (root = NIL) return getNewNode(key);
+    if (root->key == key) return root;
+    if (root->key > key) root->lchild = insert(root->lchild, key);
+    else root->rchild = insert(root->rchild, key);
+    
+    /*树高调整*/
+    UpdateHeight(root);
+    
+    return maintain(root);/*这个方法是AVL树的核心！*/
+}
+
+Node *predeccessor(Node *root) {
+    Node *temp = root->lchild;
+    while (temp->rchild != NIL) temp = temp->rchild;
+    return temp;
+}
+
+Node *erase(Node *root, int key) {
+    if (root == NIL) return root;
+    if (root->key > key) root->lchild = erase(root->lchild, key);
+    else if (root->key < key) root->rchild = erase(root->rchild, key);
+    else {
+        if (root->lchild == NIL || root->rchild == NIL) {
+            /*度为0或1*/
+            Node *temp = (root->lchild == NIL ? root->rchild : root->lchild);
+            free(root);
+            return temp;
+        } else {
+            Node *temp = predeccessor(root);
+            root->key = temp->key;
+            root->lchild = erase(root->lchild, temp->key);
+        }
+    }
+    /*更新树高*/
+   	UpdateHeight(root);
+    return maintain(root);
+}
+
+void output(Node *root) {
+    if (root == NIL) return;
+    output(root->lchild);
+    printf("%d [%d, %d]\n", root->key, root->lchild->key, root->rchild->key);
+    output(root->rchild);
+    return ;
+}
+
+
+int main() {
+    int val, op;
+    Node *root = NIL;
+    while (~scanf("%d%d", &op, &val)) {
+        switch (op) {
+            case 1: root = insert(root, val); break;
+            case 2: root = erase(root, val); break;
+        }
+        output(root);
+    }
+    return 0;
+}
+```
+
+PS：在本目录中有改进版！(增加了几个宏)

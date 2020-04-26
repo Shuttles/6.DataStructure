@@ -118,6 +118,7 @@ Node *erase(Node *root, int key) {
             root->lchild = erase(root->lchild, temp->key);
         }
     }
+    update_height(root);
     return maintain(root);
 }
 
