@@ -22,7 +22,7 @@ https://blog.csdn.net/dm_vincent/article/details/7769159
 
 ## 用途
 
-解决连通性问题，用于求不相交集合并集。
+==维护连通性关系，==解决连通性问题，用于求不相交集合并集。
 
 ### 连通性问题
 
@@ -201,6 +201,8 @@ int merge(UnionSet *u, int a, int b) {
 还是得看ASL！！
 
 ![img](https://wx3.sinaimg.cn/mw690/005LasY6gy1gc6s7pup0ej31ur0u01kx.jpg)
+
+![img](https://wx3.sinaimg.cn/mw690/005LasY6gy1gekaenom7xj31bn0u0npd.jpg)
 
 Sa是A树的结点个数，La是A树的平均查找长度，右边分别是A树作为子树和B树作为子树的ASL，可以看出，结点个数少的，ASL小！所以按结点个数优化！！
 
