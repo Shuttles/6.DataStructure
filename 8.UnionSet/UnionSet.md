@@ -312,3 +312,42 @@ int merge(UnionSet *u, int a, int b) {
 ### 总结
 
 ![img](https://wx4.sinaimg.cn/mw690/005LasY6gy1gc6rbxdzspj31ou0segs7.jpg)
+
+
+
+
+
+
+
+# 加权并查集
+
+## 1.例题
+
+### 1.1猜拳(HZOJ-72)
+
+分析
+
+1. 其实输赢关系本质上也是一种联通关系，我知道我能赢你，就知道你能输给我；我知道另一个人和你的输赢关系，就能知道那个人和我之间的输赢关系！
+
+
+
+权值设计
+
+![img](https://wx3.sinaimg.cn/mw690/005LasY6gy1gen3u1lp30j31290u0e81.jpg)
+
+![img](https://wx1.sinaimg.cn/mw690/005LasY6gy1gen3wvhtnij315v0u04qp.jpg)
+
+连通权值推导
+
+![img](https://wx3.sinaimg.cn/mw690/005LasY6gy1gen3zmfvq7j31e90u04qp.jpg)
+
+
+
+路径压缩
+
+1. 当回溯到该节点时，其父结点已经挂到root上了！！
+
+![img](https://wx3.sinaimg.cn/mw690/005LasY6gy1gen43d6wg6j31es0pskbi.jpg)
+
+
+
