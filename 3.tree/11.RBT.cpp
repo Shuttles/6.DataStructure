@@ -5,11 +5,9 @@
 	> Created Time: 六  5/16 14:28:24 2020
  ************************************************************************/
 
-#include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-using namespace std;
 
 #define RED 0
 #define BLACK 1
@@ -74,6 +72,7 @@ Node *insert_maintain(Node *root) {
 
     if (root->lchild->color == RED && root->rchild->color == RED) {
         /*这个if是为了省事而写的！！！*/
+        if (!has_red_child(root->lchild) && !has_red_child(root->rchild)) return root;//海贼红黑树单加的一行
         root->color = RED;
         root->lchild->color = root->rchild->color = BLACK;
         return root;
@@ -160,7 +159,7 @@ Node *erase_maintain(Node *root) {
 
 Node *predeccessor(Node *root) {
     Node *temp = root->lchild;
-    while (temp->lchild - NIL) temp = temp->rchild;
+    while (temp->rchild != NIL) temp = temp->rchild;
     return temp;
 }
 
@@ -219,15 +218,24 @@ void output(Node *root) {
     return ;
 }
 
+void in_order(Node *root) {
+    if (root == NIL) return ;
+    in_order(root->lchild);
+    printf("%d %d %d %d\n", root->key, root->color, 
+          root->lchild->key, root->rchild->key);
+    in_order(root->rchild);
+    return ;
+}
+
 int main() {
     int op, val;
     Node *root = NIL;
     while (~scanf("%d%d", &op, &val)) {
         switch (op) {
-            case 0: root = insert(root, val); break;
-            case 1: root = erase(root, val); break;
+            case 1: root = insert(root, val); break;
+            case 2: root = erase(root, val); break;
+            case 3: in_order(root); break;
         }
-        output(root);
     }
 
     return 0;
